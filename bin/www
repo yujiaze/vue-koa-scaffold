@@ -122,7 +122,7 @@ const router = new __WEBPACK_IMPORTED_MODULE_0_koa_router___default.a({
     prefix: '/v1'
 })
 
-router.use('/', __WEBPACK_IMPORTED_MODULE_1__view__["a" /* default */].routes())
+router.use(__WEBPACK_IMPORTED_MODULE_1__view__["a" /* default */].routes())
 router.use('/api', __WEBPACK_IMPORTED_MODULE_2__api__["a" /* default */].routes())
 
 /* harmony default export */ __webpack_exports__["a"] = (router);
@@ -286,6 +286,13 @@ const router = new __WEBPACK_IMPORTED_MODULE_0_koa_router___default.a()
 router.get('/', function* (next) {
     yield this.render('index.html')
 })
+
+router.get(
+    /page-manage\/(index|topic|channel)/,
+    function* (next) {
+        yield this.render('index.html')
+    }
+)
 
 /* harmony default export */ __webpack_exports__["a"] = (router);
 
