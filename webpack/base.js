@@ -6,7 +6,6 @@ const BUILD_PATH = path.join(__dirname, '..', '/build');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 require('shelljs/global');
 
-rm('-rf', [ROOT_PATH + '/build']);
 module.exports = function (PUBLIC_PATH) {
     return [
         {
@@ -81,6 +80,10 @@ module.exports = function (PUBLIC_PATH) {
                             require('precss')
                         ],
                     }
+                }),
+                new webpack.DllReferencePlugin({
+                    context: __dirname,
+                    manifest: require('../build/dll/vendor.manifest.json')
                 })
             ]
         },
