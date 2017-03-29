@@ -2,42 +2,31 @@ import * as Koa from 'koa'
 import timeoutMdr from './lib/middlewares/timeout'
 import views from 'koa-views'
 import path from 'path'
+import router from './routes'
+import send from 'koa-send'
 
 var app = new Koa()
 
 // Must be used before any router is used
-app.use(views('./build', {
+
+app.use(views(path.join(__dirname, '..', '/build'), {
     // map: {
     //     html: 'pug'
     // },
     // extension: 'pug'
 }))
 
-import staticMdr from 'koa-static'
-
-var send = require('koa-send');
-
-
-// app.use(staticMdr(path.join(__dirname, '/build/'), {
-
-// }))
-
-import Router from 'koa-router'
-
-const router = new Router()
-
-router.get('/', function* (next) {
-    yield this.render('index.html')
-})
-
-
 app.use(router.routes())
-    .use(router.allowedMethods())
 
-app.use(function* () {
-    yield send(this, this.path, { root: __dirname });
+app.use(function* (next) {
+    if (this.path.match(/build/)) {
+        yield send(this, this.path, { root: path.join(__dirname, '..') });
+    } else {
+        yield next
+    }
 });
 
 app.use(timeoutMdr)
 
-app.listen(3000)
+app.listen(8888)
+

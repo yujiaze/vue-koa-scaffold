@@ -1,7 +1,5 @@
 let _uuid = 0
 
-console.log(TYPES)
-
 export default {
     state: {
         todos: []
@@ -11,7 +9,7 @@ export default {
             return state.todos.push({
                 uuid: _uuid++,
                 content: content,
-                completed: false
+                completed: true
             })
         },
         [TYPES.TODO.DELETE](state, { todo }) {

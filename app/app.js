@@ -1,8 +1,9 @@
 import Vue from 'vue'
 import store from './store'
 import App from './components/App.vue'
+import VueRouter from 'vue-router'
 
-console.log(store)
+Vue.use(VueRouter)
 
 new Vue({
     store,
