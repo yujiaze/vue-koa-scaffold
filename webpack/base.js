@@ -22,7 +22,7 @@ module.exports = function (PUBLIC_PATH) {
             },
             devtool: 'source-map',
             module: {
-                loaders: [
+                rules: [
                     { test: /\.svg\??.*$/, loader: 'url?limit=65000&mimetype=image/svg+xml&name=[name].[ext]' },
                     { test: /\.woff\??.*$/, loader: 'url?limit=65000&mimetype=application/font-woff&name=[name].[ext]' },
                     { test: /\.woff2\??.*$/, loader: 'url?limit=65000&mimetype=application/font-woff2&name=[name].[ext]' },
@@ -37,10 +37,11 @@ module.exports = function (PUBLIC_PATH) {
                         ]
                     },
                     {
-                        test: /\.vue$/,
+                        test: /\.css$/,
                         loaders: [
-                            'babel-loader',
-                            'vue-loader'
+                            'style-loader',
+                            'css-loader?modules&importLoaders=1',
+                            'postcss-loader?sourceMap=inline'
                         ]
                     },
                     {
@@ -48,17 +49,33 @@ module.exports = function (PUBLIC_PATH) {
                         loader: 'pug-loader'
                     },
                     {
-                        test: /\.css$/,
-                        loaders: [
-                            'style-loader',
-                            'css-loader?modules&importLoaders=1',
-                            'postcss-loader?sourceMap=inline'
+                        test: /\.vue$/,
+                        use: [
+                            {
+                                loader: 'babel-loader'
+                            },
+                            {
+                                loader: 'vue-loader',
+                                options: {
+                                    postcss: {
+                                        plugins: [
+                                            require('autoprefixer')({
+                                                browsers: ['last 2 versions']
+                                            }),
+                                            require('precss')
+                                        ],
+                                        options: {
+                                            parser: require('postcss-scss')
+                                        }
+                                    }
+                                }
+                            }
                         ]
                     }
                 ]
             },
             resolve: {
-                extensions: ['.js', '.jsx']
+                extensions: ['.js', '.vue']
             },
             plugins: [
                 new webpack.ProvidePlugin({
@@ -73,12 +90,15 @@ module.exports = function (PUBLIC_PATH) {
                 }),
                 new webpack.LoaderOptionsPlugin({
                     options: {
-                        postcss: [
-                            require('autoprefixer')({
-                                browsers: ['last 2 versions']
-                            }),
-                            require('precss')
-                        ],
+                        postcss: {
+                            parser: require('postcss-scss'),
+                            plugins: [
+                                require('autoprefixer')({
+                                    browsers: ['last 2 versions']
+                                }),
+                                require('precss')
+                            ]
+                        }
                     }
                 }),
                 new webpack.DllReferencePlugin({

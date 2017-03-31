@@ -6,7 +6,8 @@ module.exports = {
         vendor: [
             'vue',
             'vue-router',
-            'vuex'
+            'vuex',
+            'jquery'
         ]
     },
     output: {

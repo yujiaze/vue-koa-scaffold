@@ -1,5 +1,5 @@
 <template>
-    <li :class="styles.test">
+    <li class="test">
         <input type="checkbox"
                v-model="todoItem.completed" />
         <span>{{todoItem.content}}</span>
@@ -9,13 +9,13 @@
 
 <script>
 import { mapMutations } from 'vuex'
-import styles from './TodoItem.css'
+
 
 export default {
     name: 'TodoItem',
     data() {
         return {
-            styles: styles
+
         }
     },
     computed: {
@@ -29,3 +29,9 @@ export default {
     }
 }
 </script>
+
+<style scoped>
+.test {
+    background: red;
+}
+</style>

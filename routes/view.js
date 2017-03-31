@@ -13,4 +13,12 @@ router.get(
     }
 )
 
+
+router.get(
+        /uwp-push\/(message|history)/,
+    function* (next) {
+        yield this.render('index.html')
+    }
+)
+
 export default router
