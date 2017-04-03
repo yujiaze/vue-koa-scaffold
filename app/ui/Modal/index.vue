@@ -9,7 +9,7 @@
                 <slot></slot>
             </div>
             <div class="ui-modal-bottom">
-                <button class="ui-button">确定</button>
+                <button class="ui-button" @click="confirm">确定</button>
             </div>
         </div>
     </div>

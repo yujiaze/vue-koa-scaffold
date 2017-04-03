@@ -4,6 +4,8 @@ import views from 'koa-views'
 import path from 'path'
 import router from './routes'
 import send from 'koa-send'
+import * as bodyParserMiddleware from 'koa-bodyparser'
+import proxyMdr from './lib/middlewares/proxy'
 
 var app = new Koa()
 
@@ -16,6 +18,12 @@ app.use(views(path.join(__dirname, '..', '/build'), {
     // extension: 'pug'
 }))
 
+app.use(timeoutMdr)
+
+app.use(bodyParserMiddleware({
+    formLimit: '1mb' //prevent payload too large 413
+}))
+
 app.use(router.routes())
 
 app.use(function* (next) {
@@ -24,9 +32,9 @@ app.use(function* (next) {
     } else {
         yield next
     }
-});
+})
 
-app.use(timeoutMdr)
+app.use(proxyMdr)
 
 app.listen(8888)
 

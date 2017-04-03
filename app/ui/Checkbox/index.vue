@@ -3,7 +3,8 @@
         <div class="ui-checkbox-item">
             <input :id="id"
                    type="checkbox"
-                   ref="checkbox" />
+                   ref="checkbox"
+                   v-model="initial" />
             <label :for="id"
                    @click="toggle">
                 {{title}}
@@ -24,7 +25,8 @@ const _uuid = () => "ui-checkbox-" + (_uid++)
 
 @Component({
     props: {
-        title: String
+        title: String,
+        initial: Boolean
     }
 })
 export default class Checkbox extends Vue {

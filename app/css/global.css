@@ -12,6 +12,15 @@
     a:visited {
         color: inherit;
     }
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    h7 {
+        cursor: default;
+    }
     /*! normalize.css v6.0.0 | MIT License | github.com/necolas/normalize.css */
     /* Document
    ========================================================================== */

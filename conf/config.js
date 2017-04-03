@@ -1,9 +1,10 @@
 const config = {
     base: {
-        LOG_LEVEL: 'debug'
+        LOG_LEVEL: 'debug',
     },
     dev: {
-        LOG_LEVEL: 'debug'
+        LOG_LEVEL: 'debug',
+        proxy_url: 'http://baidu.com'
     },
     test: {
         LOG_LEVEL: 'info'

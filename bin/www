@@ -64,7 +64,7 @@ module.exports =
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 8);
+/******/ 	return __webpack_require__(__webpack_require__.s = 10);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -78,9 +78,83 @@ module.exports = require("koa-router");
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_co__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_request__ = __webpack_require__(16);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_request___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_request__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__conf_config__ = __webpack_require__(9);
+
+
+
+const create_opt = ctx => {
+    const default_opt = {
+        headers: {
+            'Content-Type': ctx.request.headers['content-type'],
+            Host: __WEBPACK_IMPORTED_MODULE_1__conf_config__["a" /* default */].proxy_url.replace(/https?:\/\//g, ''),
+            Referer: __WEBPACK_IMPORTED_MODULE_1__conf_config__["a" /* default */].proxy_url
+
+        },
+        encoding: null, //for image return as Buffer
+        timeout: 8000,
+        jar: true
+    }
+    return Object.assign(default_opt, parse_body(ctx), { method: ctx.request.method })
+}
+
+
+
+
+const parse_body = ctx => {
+    var body = ctx.request.body
+    if (body === undefined || body === null) {
+        return { body: undefined }
+    }
+    var content_type = ctx.request.header['content-type']
+
+    if (!Buffer.isBuffer(body) && typeof body !== 'string') {
+        if (content_type && content_type.indexOf('form') !== -1) {
+            return { form: body }
+        } else {
+            body = JSON.stringify(body)
+            return { body: body }
+        }
+    }
+    return { body: body }
+}
+
+
+const request_promise = (url, opt) => new Promise(
+    (resolve, reject) => {
+        console.log(url, opt)
+        __WEBPACK_IMPORTED_MODULE_0_request__(
+            url,
+            opt,
+            (err, response, body) => (!err && response.statusCode == 200) ? resolve(response) : reject(err)
+        )
+    }
+)
+/* unused harmony export request_promise */
+
+
+/* harmony default export */ __webpack_exports__["a"] = (function* (next) {
+    var proxy_url
+    if (this.path.match(/proxy/)) {
+        proxy_url = __WEBPACK_IMPORTED_MODULE_1__conf_config__["a" /* default */].proxy_url + this.path.replace(/proxy\//g, '') + this.search
+        var result = yield request_promise(proxy_url, create_opt(this))
+        this.type = result.headers['content-type']
+        this.body = result.body
+    }
+    yield next
+});
+
+/***/ }),
+/* 2 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_co__ = __webpack_require__(14);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_co___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_co__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__logger__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__logger__ = __webpack_require__(11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__error__ = __webpack_require__(17);
+
 
 
 
@@ -97,23 +171,22 @@ module.exports = require("koa-router");
         }),
         new Promise((resolve, reject) => {
             timeout = setTimeout(() => {
-                this.status = 408
-                this.body = 'request timeout'
-                reject(new Error('request timeout'))
-            }, 10000)
+                var err = new __WEBPACK_IMPORTED_MODULE_2__error__["a" /* default */]('Request Timeout', 408)
+                reject(err)
+            }, 5000)
         }),
     ])
 });
 
 /***/ }),
-/* 2 */
+/* 3 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_koa_router__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_koa_router___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_koa_router__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__view__ = __webpack_require__(11);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__api__ = __webpack_require__(10);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__view__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__api__ = __webpack_require__(12);
 
 
 
@@ -128,40 +201,47 @@ router.use('/api', __WEBPACK_IMPORTED_MODULE_2__api__["a" /* default */].routes(
 /* harmony default export */ __webpack_exports__["a"] = (router);
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, exports) {
 
 module.exports = require("koa");
 
 /***/ }),
-/* 4 */
-/***/ (function(module, exports) {
-
-module.exports = require("koa-send");
-
-/***/ }),
 /* 5 */
 /***/ (function(module, exports) {
 
-module.exports = require("koa-views");
+module.exports = require("koa-bodyparser");
 
 /***/ }),
 /* 6 */
 /***/ (function(module, exports) {
 
-module.exports = require("path");
+module.exports = require("koa-send");
 
 /***/ }),
 /* 7 */
+/***/ (function(module, exports) {
+
+module.exports = require("koa-views");
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports) {
+
+module.exports = require("path");
+
+/***/ }),
+/* 9 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 const config = {
     base: {
-        LOG_LEVEL: 'debug'
+        LOG_LEVEL: 'debug',
     },
     dev: {
-        LOG_LEVEL: 'debug'
+        LOG_LEVEL: 'debug',
+        proxy_url: 'http://10.16.54.74:8098'
     },
     test: {
         LOG_LEVEL: 'info'
@@ -177,21 +257,26 @@ var env = process.env.NODE_ENV || 'dev'
 /* harmony default export */ __webpack_exports__["a"] = (Object.assign({}, config['base'], config[env]));
 
 /***/ }),
-/* 8 */
+/* 10 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_koa__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_koa__ = __webpack_require__(4);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_koa___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_koa__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__lib_middlewares_timeout__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_koa_views__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__lib_middlewares_timeout__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_koa_views__ = __webpack_require__(7);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_koa_views___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_koa_views__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_path__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_path__ = __webpack_require__(8);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_path___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_path__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__routes__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_koa_send__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__routes__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_koa_send__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_koa_send___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5_koa_send__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_koa_bodyparser__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_koa_bodyparser___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_6_koa_bodyparser__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__lib_middlewares_proxy__ = __webpack_require__(1);
+
+
 
 
 
@@ -210,6 +295,12 @@ app.use(__WEBPACK_IMPORTED_MODULE_2_koa_views___default()(__WEBPACK_IMPORTED_MOD
     // extension: 'pug'
 }))
 
+app.use(__WEBPACK_IMPORTED_MODULE_1__lib_middlewares_timeout__["a" /* default */])
+
+app.use(__WEBPACK_IMPORTED_MODULE_6_koa_bodyparser__({
+    formLimit: '1mb' //prevent payload too large 413
+}))
+
 app.use(__WEBPACK_IMPORTED_MODULE_4__routes__["a" /* default */].routes())
 
 app.use(function* (next) {
@@ -218,22 +309,22 @@ app.use(function* (next) {
     } else {
         yield next
     }
-});
+})
 
-app.use(__WEBPACK_IMPORTED_MODULE_1__lib_middlewares_timeout__["a" /* default */])
+app.use(__WEBPACK_IMPORTED_MODULE_7__lib_middlewares_proxy__["a" /* default */])
 
 app.listen(8888)
 
 
 
 /***/ }),
-/* 9 */
+/* 11 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_winston__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_winston__ = __webpack_require__(15);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_winston___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_winston__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__conf_config__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__conf_config__ = __webpack_require__(9);
 
 
 
@@ -244,7 +335,7 @@ logger.level = __WEBPACK_IMPORTED_MODULE_1__conf_config__["a" /* default */].LOG
 /* harmony default export */ __webpack_exports__["a"] = (logger);
 
 /***/ }),
-/* 10 */
+/* 12 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -273,7 +364,7 @@ router.post('/tag-edit/:tagid', function* (next) {
 
 
 /***/ }),
-/* 11 */
+/* 13 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -306,16 +397,38 @@ router.get(
 
 
 /***/ }),
-/* 12 */
+/* 14 */
 /***/ (function(module, exports) {
 
 module.exports = require("co");
 
 /***/ }),
-/* 13 */
+/* 15 */
 /***/ (function(module, exports) {
 
 module.exports = require("winston");
+
+/***/ }),
+/* 16 */
+/***/ (function(module, exports) {
+
+module.exports = require("request");
+
+/***/ }),
+/* 17 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+class ErrorOverRide extends Error {
+    constructor(message, status = '500') {
+        super(message)
+        this.status = status
+    }
+}
+/* harmony export (immutable) */ __webpack_exports__["a"] = ErrorOverRide;
+
+
+
 
 /***/ })
 /******/ ]);

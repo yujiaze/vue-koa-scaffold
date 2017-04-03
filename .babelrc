@@ -3,6 +3,7 @@
     "latest"
   ],
   "plugins": [
+    "transform-es2015-destructuring",
     "transform-object-rest-spread",
     "transform-vue-jsx",
     "transform-decorators-legacy",

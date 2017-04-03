@@ -1,4 +1,5 @@
 import VueRouter from 'vue-router'
+import IndexManage from '../components/IndexManage'
 import UwpMessage from '../components/UwpMessage'
 
 const FooComponent = {
@@ -9,7 +10,7 @@ const FooComponent = {
 
 
 const routes = [
-    { path: '/page-manage/index', component: FooComponent },
+    { path: '/page-manage/index', component: IndexManage },
     { path: '/page-manage/channel', component: FooComponent },
     { path: '/page-manage/topic', component: FooComponent },
     { path: '/uwp-push/message', component: UwpMessage }
