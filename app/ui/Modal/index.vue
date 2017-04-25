@@ -70,6 +70,7 @@
         font-size: 16px;
         font-weight: 700;
         color: #333;
+        cursor: default;
     }
     
     .ui-modal-close {
@@ -79,6 +80,7 @@
         position: relative;
         float: right;
         top: -2px;
+        cursor: pointer;
         &::before {
             content: ' ';
             background: #999;

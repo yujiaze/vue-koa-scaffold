@@ -4,7 +4,7 @@
             <input :id="id"
                    type="checkbox"
                    ref="checkbox"
-                   v-model="initial" />
+                   v-model="checked" />
             <label :for="id"
                    @click="toggle">
                 {{title}}
@@ -32,6 +32,7 @@ const _uuid = () => "ui-checkbox-" + (_uid++)
 export default class Checkbox extends Vue {
     name = 'Checkbox'
     id = _uuid()
+    checked = this.initial
     constructor() {
         super()
     }

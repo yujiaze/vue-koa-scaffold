@@ -9,7 +9,7 @@
     li {
         list-style: none;
     }
-    a:visited {
+    a:visited, a {
         color: inherit;
     }
     h1,
@@ -20,6 +20,9 @@
     h6,
     h7 {
         cursor: default;
+    }
+    input {
+        outline: none;
     }
     /*! normalize.css v6.0.0 | MIT License | github.com/necolas/normalize.css */
     /* Document

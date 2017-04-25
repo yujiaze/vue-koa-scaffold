@@ -2,23 +2,14 @@ import Router from 'koa-router'
 
 const router = new Router()
 
-router.get('/', function* (next) {
-    yield this.render('index.html')
+import authMdr from '../lib/middlewares/auth'
+
+router.use(authMdr)
+
+router.get('*', function* (next) {
+    yield this.render('../views/main.pug', {
+        user_info: JSON.stringify(this.state.user_info)
+    })
 })
-
-router.get(
-    /page-manage\/(index|topic|channel)/,
-    function* (next) {
-        yield this.render('index.html')
-    }
-)
-
-
-router.get(
-        /uwp-push\/(message|history)/,
-    function* (next) {
-        yield this.render('index.html')
-    }
-)
 
 export default router

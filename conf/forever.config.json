@@ -1,0 +1,7 @@
+{
+    "uid": "vue-koa-scaffold",
+    "append": true,
+    "watch": false,
+    "script": "bin/www",
+    "root": "/opt/logs"
+}

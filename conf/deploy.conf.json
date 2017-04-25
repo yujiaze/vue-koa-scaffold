@@ -1,0 +1,27 @@
+{
+    "_common": {
+        "nginx_conf_dir": "/opt/conf/nginx/sites-avaliable/",
+        "nginx_link_dir": "/opt/conf/nginx/sites-enabled/",
+        "nginx_log_dir": "/opt/logs/nginx",
+        "log_path": "/opt/logs/vue-koa-scaffold/",
+        "export": "export PATH=$PATH",
+        "n_proc": 2,
+        "port": 13001,
+        "deploy_dir": "/opt/web/vue-koa-scaffold"
+    },
+    "test": {
+        "servers": [],
+        "name": "test",
+        "upstream_name": "vue-koa-scaffold_test"
+    },
+    "pre": {
+        "servers": [],
+        "name": "t",
+        "upstream_name": "vue-koa-scaffold_pre"
+    },
+    "production": {
+        "servers": [],
+        "name": "t",
+        "upstream_name": "vue-koa-scaffold_production"
+    }
+}

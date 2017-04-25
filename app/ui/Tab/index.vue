@@ -1,17 +1,11 @@
 <template>
-    <div>
+    <div class="ui-tab">
         <ul class="ui-tab-ul">
-            <template v-for="tab in tabList">
-                            <li :class="[tab == cur ? 'active' : '']"
-                                :key="tab">
-                                <a href="javascript:;"
-                                   @click="setActive(tab)">
-                                                            {{tab}}
-                                                        </a>
-                            </li>
-</template>
+            <li v-for="(tab,idx) in tabList" :class="[idx == cur ? 'active' : '']" :key="tab">
+                <a href="javascript:;" @click="setActive(idx)">{{tab}}</a>
+            </li>
         </ul>
-        <div>
+        <div class="ui-tab-content">
             <slot>
             </slot>
         </div>
@@ -33,11 +27,16 @@
             }
         },
         mounted() {
-            this.cur = this.tabList[0]
+            this.cur = 0
         },
         methods: {
             setActive(idx) {
                 this.cur = idx
+            }
+        },
+        watch: {
+            cur: function() {
+                this.$emit('ui-tab-switch', this.cur)
             }
         }
     }
@@ -54,7 +53,6 @@
         line-height: 42px;
         >li {
             display: inline-block;
-            padding: 0 16px;
             height: 42px;
             box-sizing: border-box;
             line-height: 42px;
@@ -67,6 +65,8 @@
             >a {
                 text-decoration: none;
                 color: inherit;
+                display: block;
+                padding: 0 16px;
             }
             &.active {
                 color: #20a0ff;

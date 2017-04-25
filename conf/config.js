@@ -4,10 +4,13 @@ const config = {
     },
     dev: {
         LOG_LEVEL: 'debug',
-        proxy_url: 'http://baidu.com'
+        proxy_url: '',
+        backend_url: '',
     },
     test: {
-        LOG_LEVEL: 'info'
+        LOG_LEVEL: 'info',
+        proxy_url: '',
+        backend_url: '',        
     },
     production: {
         LOG_LEVEL: 'info'

@@ -5,20 +5,18 @@
 </template>
 
 <script>
-
-
-export default {
-    name: "TabItem",
-    props: {
-        label: String
-    },
-    computed: {
-        show() {
-            return this.$parent && this.$parent.cur === this.label
+    export default {
+        name: "TabItem",
+        props: {
+            label: String
+        },
+        computed: {
+            show() {
+                return this.$parent && this.$parent.cur === this.$parent.tabList.indexOf(this.label)
+            }
+        },
+        created() {
+            this.$parent.tabList.push(this.label)
         }
-    },
-    created() {
-        this.$parent.tabList.push(this.label)
     }
-}
 </script>

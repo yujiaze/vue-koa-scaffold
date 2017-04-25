@@ -2,12 +2,12 @@ import Vue from 'vue'
 
 /*
     @params:{
-        group: String //用于判断是否可以在多个列表间相互拖拽，
-        put: boolean //是否允许其他sortable拖入
-        pull: boolean //是否允许拖出
-        onChange: (newIndex, oldIndex) => void
-
-
+        group: String|Number //用于判断是否可以在多个列表间相互拖拽，
+        sort = true: boolean //是否允许内部排序
+        put = true: true|false|["foo", "bar"] //是否允许其他sortable拖入
+        pull = true: boolean //是否允许拖出
+        onChange: (newIndex, oldIndex, from, to) => void
+        handler: String //用于拖拽的元素，有嵌套拖拽时应该使用
         dragstart(memory DragDOM) -> dragenter(memory DropDOM) -> dragOver(insert DragDOM on correct place) -> afterInsert(triggers dragleave)
         -> DragDOM events handle all noop(prevent trigger events itself)-> dragenter -> dragover(insert DragDOM again, the DragDOM inserted before is **the same instance** with now)
     } 
@@ -32,10 +32,26 @@ function noop() {
 
 }
 
-function onDragStart(e, parent) {
+function shouldReturn(e, group, sort, put, pull) {
+    if (!_currentDraggingDOM) return true
+    if (!_currentDraggingDOM._sortable_parent_._sortable_pull_ && e.currentTarget.parentNode != _currentDraggingDOM._sortable_parent_) return true //如果不允许拖出
+    if ((put == false && _currentDraggingDOM._sortable_parent_ != e.currentTarget.parentNode) || (put.indexOf && put.indexOf(_currentDraggingDOM.parentNode._sortable_group_)) == -1) return true //如果不允许拖入或者不在允许拖入的列表中
+    if (!sort && e.currentTarget.parentNode == _currentDraggingDOM._sortable_parent_) return true //如果不允许内部排序
+    return false
+}
+
+function onMouseDown(e, handler) {
+    e.currentTarget.draggable = 'true'
+    if (handler && e.currentTarget.querySelector(handler) != e.target && !e.currentTarget.querySelector(handler).contains(e.target)) {
+        return e.currentTarget.removeAttribute('draggable')
+    }
+}
+
+function onDragStart(e, group, sort, put, pull) {
+    e.stopPropagation()
     _currentDraggingDOM = e.currentTarget
     _currentDraggingDOM.style.opacity = '0.5'
-    _currentDraggingDOM._sortable_parent_ = e.target.parentNode
+    _currentDraggingDOM._sortable_parent_ = e.currentTarget.parentNode
     _currentDraggingDOM.ondragstart = noop
     _currentDraggingDOM.ondragover = noop
     _currentDraggingDOM.ondragleave = noop
@@ -44,13 +60,17 @@ function onDragStart(e, parent) {
     _currentDraggingDOM._sortable_index_ = getIndex(_currentDraggingDOM)
 }
 
-function onDragEnter(e) {
+function onDragEnter(e, group, sort, put, pull) {
+    e.stopPropagation()
+    if (shouldReturn(e, group, sort, put, pull)) return
     _insertInfo.dom = e.currentTarget
 }
 
 
-function onDragOver(e) {
-    e.preventDefault()
+function onDragOver(e, group, sort, put, pull) {
+    e.stopPropagation()
+    if (shouldReturn(e, group, sort, put, pull)) return
+    e.preventDefault() //调用了这个方法才会有接下来的事件
     var box = e.currentTarget.getBoundingClientRect(),
         offsetX = e.clientX - box.left,
         offsetY = e.clientY - box.top,
@@ -64,47 +84,87 @@ function onDragOver(e) {
 }
 
 function onDragLeave(e) {
-    _insertInfo.dom = null //离开的时候清除信息
+    // _insertInfo.dom = null //离开的时候清除信息
 }
 
-function onDrop(e, parent) {
+// function onDrop(e, parent) {
+//     if (_insertInfo.dom) {
+//         _currentDraggingDOM._sortable_parent_ != e.target.parentNode && _currentDraggingDOM._sortable_parent_.removeChild(_currentDraggingDOM)
+//     }
+//     console.log('drop')
+// }
+
+function onDragEnd(e, onChange, group, sort, put, pull) {
+    e.stopPropagation()
     if (_insertInfo.dom) {
-        _currentDraggingDOM._sortable_parent_ != e.target.parentNode && _currentDraggingDOM._sortable_parent_.removeChild(_currentDraggingDOM)
+        group = _insertInfo.dom.parentNode._sortable_group_
+        sort = _insertInfo.dom.parentNode._sortable_sort_
+        put = _insertInfo.dom.parentNode._sortable_put_
+        pull = _insertInfo.dom.parentNode._sortable_pull_
     }
-}
 
-function onDragEnd(e, onChange) {
     _currentDraggingDOM.style.opacity = '1'
-    _currentDraggingDOM.ondragstart = onDragStart
-    _currentDraggingDOM.ondragover = onDragOver
-    _currentDraggingDOM.ondragleave = onDragLeave
-    _currentDraggingDOM.ondragenter = onDragEnter
-    _currentDraggingDOM.ondrop = onDrop
+    _currentDraggingDOM.ondragstart = e => onDragStart(e, group, sort, put, pull)
+    _currentDraggingDOM.ondragover = e => onDragOver(e, group, sort, put, pull)
+    _currentDraggingDOM.ondragleave = e => onDragLeave(e, group, sort, put, pull)
+    _currentDraggingDOM.ondragenter = e => onDragEnter(e, group, sort, put, pull)
+    // _currentDraggingDOM.ondrop = onDrop
     if (_currentDraggingDOM._sortable_index_ != getIndex(_currentDraggingDOM) || _currentDraggingDOM._sortable_parent_ != _currentDraggingDOM.parentNode) {
-        onChange(getIndex(_currentDraggingDOM), _currentDraggingDOM._sortable_index_)
+        onChange(getIndex(_currentDraggingDOM), _currentDraggingDOM._sortable_index_, _currentDraggingDOM._sortable_parent_._sortable_group_, _currentDraggingDOM.parentNode._sortable_group_)
     }
+    _currentDraggingDOM = null
 }
 Vue.directive('sortable', {
     bind(el, binding, vnode, oldVnode) {
-        let { onChange } = binding.value;
-        [].forEach.call(el.children, e => {
-            e.draggable = true
-            e.ondragstart = onDragStart
-            e.ondragover = onDragOver
-            e.ondragleave = onDragLeave
-            e.ondragenter = onDragEnter
-            e.ondrop = onDrop
-            e.ondragend = e => onDragEnd(e, onChange)
+        let { onChange, group = '', sort = true, put = true, pull = true, handler } = binding.value
+        el._sortable_group_ = group
+        el._sortable_sort_ = sort
+        el._sortable_put_ = put
+        el._sortable_pull_ = pull
+        ;[].forEach.call(el.children, child => {
+            if (handler) {
+                var _onMouseDown = child.onmousedown || noop
+                child.onmousedown = (e, ...args) => {
+                    _onMouseDown(e, args)
+                    onMouseDown(e, handler)
+                }
+            }
+            child.draggable = true
+            child.ondragstart = e => onDragStart(e, group, sort, put, pull)
+            child.ondragover = e => onDragOver(e, group, sort, put, pull)
+            child.ondragleave = e => onDragLeave(e, group, sort, put, pull)
+            child.ondragenter = e => onDragEnter(e, group, sort, put, pull)
+            // child.ondrop = e => onDrop(e, group, sort, put, pull)
+            child.ondragend = e => onDragEnd(e, onChange, group, sort, put, pull)
         })
     },
     inserted(el) {
 
     },
-    update() {
-
+    update(el, binding) {
     },
-    componentUpdated() {
-
+    componentUpdated(el, binding) {
+        let { onChange, group = '', sort = true, put = true, pull = true, handler } = binding.value
+        el._sortable_group_ = group
+        el._sortable_sort_ = sort
+        el._sortable_put_ = put
+        el._sortable_pull_ = pull
+        ;[].forEach.call(el.children, child => {
+            if (handler) {
+                var _onMouseDown = child.onmousedown || noop
+                child.onmousedown = (e, ...args) => {
+                    _onMouseDown(e, args)
+                    onMouseDown(e, handler)
+                }
+            }
+            child.draggable = true
+            child.ondragstart = e => onDragStart(e, group, sort, put, pull)
+            child.ondragover = e => onDragOver(e, group, sort, put, pull)
+            child.ondragleave = e => onDragLeave(e, group, sort, put, pull)
+            child.ondragenter = e => onDragEnter(e, group, sort, put, pull)
+            // child.ondrop = e => onDrop(e, group, sort, put, pull)
+            child.ondragend = e => onDragEnd(e, onChange, group, sort, put, pull)
+        })
     },
     unbind() {
 

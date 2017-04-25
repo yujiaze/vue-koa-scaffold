@@ -4,3 +4,4 @@ dest/
 build/
 npm-debug.log
 .vscode/
+bin/www

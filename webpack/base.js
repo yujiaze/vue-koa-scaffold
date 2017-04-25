@@ -3,7 +3,6 @@ const path = require('path');
 const ROOT_PATH = path.join(__dirname, '..');
 const BUILD_PATH = path.join(__dirname, '..', '/build');
 
-const HtmlWebpackPlugin = require('html-webpack-plugin');
 require('shelljs/global');
 
 module.exports = function (PUBLIC_PATH) {
@@ -17,7 +16,7 @@ module.exports = function (PUBLIC_PATH) {
             ],
             output: {
                 path: BUILD_PATH,
-                filename: "[hash].js",
+                filename: "index.bundle.js",
                 publicPath: PUBLIC_PATH
             },
             devtool: 'source-map',
@@ -37,7 +36,7 @@ module.exports = function (PUBLIC_PATH) {
                         ]
                     },
                     {
-                        test: /\.css$/,
+                        test: /\.s?css$/,
                         loaders: [
                             'style-loader',
                             'css-loader?modules&importLoaders=1',
@@ -84,10 +83,6 @@ module.exports = function (PUBLIC_PATH) {
                 new webpack.DefinePlugin({
                     'process.env.NODE_ENV': JSON.stringify('dev')
                 }),
-                new HtmlWebpackPlugin({
-                    template: path.join(__dirname, '..', '/views/main.pug'),
-                    minify: false
-                }),
                 new webpack.LoaderOptionsPlugin({
                     options: {
                         postcss: {
@@ -110,7 +105,10 @@ module.exports = function (PUBLIC_PATH) {
         {
             // The configuration for the server-side
             name: "server-side",
-            entry: "./index.js",
+            entry: [
+                "babel-polyfill",
+                "./index.js"
+            ],
             target: "node",
             output: {
                 path: ROOT_PATH + '/bin',
@@ -122,6 +120,15 @@ module.exports = function (PUBLIC_PATH) {
             },
             externals: /^[a-z\-0-9]+$/,
             module: {
+                rules: [
+                    {
+                        test: /(\.jsx?$)|(\.tsx?)/,
+                        exclude: /node_modules/,
+                        loaders: [
+                            'babel-loader'
+                        ]
+                    }
+                ]
             }
         }
     ];

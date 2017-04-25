@@ -11,13 +11,11 @@ $border-color: #bfcbd9;
         border: 1px solid $border-color;
         box-sizing: border-box;
         color: #1f2d3d;
-        display: block;
         font-size: inherit;
         height: 30px;
         line-height: 1;
         outline: none;
         padding: 3px 10px;
-        width: 100%;
         &:hover {
             border-color: $hover-color
         }
@@ -46,6 +44,27 @@ $border-color: #bfcbd9;
         }
         &:focus {
             border-color: $base-color
+        }
+    }
+    form {
+        label {
+            display: inline-block;
+            width: 80px;
+        }
+        label+input {
+            width: calc(100% - 86px);
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+    }
+    .ui-table {
+        border-collapse: collapse;
+        text-align: center;
+        >thead {
+            background: #eef1f6;
+        }
+        tr {
+            border: 1px solid #dfe6ec;
         }
     }
 }

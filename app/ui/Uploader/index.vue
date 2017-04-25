@@ -19,7 +19,7 @@
         props: {
             accept: {
                 type: String,
-                default: 'image/*'
+                default: 'image/gif,image/jpeg,image/jpg,image/png'
             },
             action: String,
             filename: String,
@@ -57,7 +57,7 @@
     }
 </script>
 
-<style>
+<style scoped lang="postcss">
     form {
         display: none;
     }
