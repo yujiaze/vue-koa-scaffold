@@ -59,12 +59,61 @@ $border-color: #bfcbd9;
     }
     .ui-table {
         border-collapse: collapse;
-        text-align: center;
+        text-align: left;
+        font-size: 14px;
+        color: #1f2d3d;
+        margin-bottom:20px;
         >thead {
             background: #eef1f6;
+        }
+        a {
+            text-decoration: none;
+        }
+        a:hover {
+            color:#20a0ff;
+        }
+        th{
+            padding-left: 18px;
+            box-sizing: border-box;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: normal;
+            word-break: break-all;
+            line-height: 24px;
+            min-width: 100px;
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
+        td{
+            padding: 10px 0;
+
+            max-width:613px;
+            overflow:hidden;
+
         }
         tr {
             border: 1px solid #dfe6ec;
         }
+        tbody tr:nth-child(2n){
+            background-color: #fff;
+        }
+        tbody tr:nth-child(2n+1){
+            background-color: #fafafa;
+        }
+        tbody td div{
+            box-sizing: border-box;
+            width:100%;
+            overflow: hidden;
+            white-space:nowrap;
+            text-overflow:ellipsis;
+            text-overflow: ellipsis;
+            white-space: normal;
+            word-break: break-all;
+            line-height: 24px;
+            padding-left: 18px;
+            padding-right: 18px;
+            text-align: left;
+        }
+        
     }
 }

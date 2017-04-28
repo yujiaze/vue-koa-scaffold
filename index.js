@@ -4,9 +4,10 @@ import views from 'koa-views'
 import path from 'path'
 import router from './routes'
 import send from 'koa-send'
-import bodyParserMiddleware from 'koa-bodyparser'
+import bodyParser from 'koa-better-body'
 import proxyMdr from './lib/middlewares/proxy'
 import config from './conf/config'
+import logger from './lib/logger'
 
 var app = new Koa()
 
@@ -22,6 +23,7 @@ app.use(function* (next) {
     try {
         yield next
     } catch (e) {
+        logger.error(e)
         this.status = e.status || 500
         this.body = e.message
     }
@@ -35,9 +37,7 @@ app.use(function* (next) {
     yield next
 })
 
-app.use(bodyParserMiddleware({
-    formLimit: '1mb' //prevent payload too large 413
-}))
+app.use(bodyParser({}))
 
 app.use(router.routes())
 

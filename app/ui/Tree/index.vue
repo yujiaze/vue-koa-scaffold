@@ -1,8 +1,9 @@
 <template>
     <div class="ui-tree">
         <div class="ui-ripple" @click="toggle">
-            {{this.items.label}}
-            <i ref="angle" class="kz-e-angle-up"></i>
+            <router-link v-if="items.route" :to="items.route">{{items.label}}</router-link>
+            <span v-else>{{this.items.label}}</span>
+            <i v-if="items.children && items.children.length != 0" :style="[!open ? {transform: 'rotate(180deg)'} : {transform: 'rotate(0deg)'}]" class="kz-e-angle-up"></i>
         </div>
         <ul class="ui-tree-children" v-if="isFolder" v-show="open">
             <template v-for="content in this.items.children">
@@ -37,13 +38,7 @@
         },
         methods: {
             toggle() {
-                if (!this.open){
-                    this.$refs.angle.style = 'transform: rotate(180deg)'
-                } else {
-                    this.$refs.angle.style = 'transform: rotate(0deg)'
-                }
                 this.open = !this.open
-
             }
         }
     }
@@ -59,6 +54,20 @@
         margin-top: 15px;
         transition: all 0.5s;
     }
+    .ui-ripple {
+        height: 48px;
+        a {
+            text-decoration: none;
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: calc(100% - 30px);
+            margin-left: 30px;
+            height: 100%;
+            z-index: 2;
+            line-height: 48px;
+        }
+    }
     .ui-ripple, ul, li {
         width: 100%;
     }
@@ -68,6 +77,10 @@
     }
     .ui-tree .ui-tree .ui-ripple {
         padding-left: 50px;
+        a {
+            width: calc(100% - 50px);
+            margin-left: 50px;
+        }
     }
     .ui-ripple {
         box-sizing: border-box;

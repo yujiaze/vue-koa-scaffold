@@ -4,12 +4,12 @@ const promisify = (url, type = 'GET', data = {}, ...args) => {
             url,
             type,
             data,
-            args,
+            ...args[0],
             success(data) {
                 resolve(data)
             },
-            error(e) {
-                reject(e)
+            error(e, res) {
+                reject(JSON.parse(e.responseText))
             }
         })
     })

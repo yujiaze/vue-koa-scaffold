@@ -38,6 +38,11 @@
                 value: this.initial || ''
             }
         },
+        watch: {
+            initial() {
+                this.value = this.initial
+            }
+        },
         computed: {
             remain() {
                 return this.maxLength && (this.maxLength - this.value.length)

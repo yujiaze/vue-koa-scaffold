@@ -12,6 +12,9 @@
     a:visited, a {
         color: inherit;
     }
+    span {
+        cursor: default;
+    }
     h1,
     h2,
     h3,
@@ -23,6 +26,9 @@
     }
     input {
         outline: none;
+    }
+    body, input, button, h1, h2, h3, h4, h5, h6, article, aside, details, figcaption, figure, footer, header, hgroup, main, menu, nav, section, summary, blockquote, q, th, td, caption, table, div, span, object, iframe, p, pre, a, abbr, acronym, address, code, del, dfn, em, img, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, caption, tbody, tfoot, thead, tr {
+        font-family: PingFangSC-Light, "微软雅黑","微软雅黑","Microsoft YaHei",Helvetica,Tahoma,sans-serif;
     }
     /*! normalize.css v6.0.0 | MIT License | github.com/necolas/normalize.css */
     /* Document

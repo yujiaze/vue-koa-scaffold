@@ -16,7 +16,12 @@
             }
         },
         created() {
-            this.$parent.tabList.push(this.label)
+            if (this.$parent.tabList.indexOf(this.label) === -1) {
+                this.$parent.tabList.push(this.label)
+            }
+        },
+        beforeDestroy() {
+            this.$parent.tabList.splice(this.$parent.tabList.indexOf(this.label), 1)
         }
     }
 </script>

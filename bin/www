@@ -7,9 +7,9 @@ module.exports =
 /******/ 	function __webpack_require__(moduleId) {
 /******/
 /******/ 		// Check if module is in cache
-/******/ 		if(installedModules[moduleId])
+/******/ 		if(installedModules[moduleId]) {
 /******/ 			return installedModules[moduleId].exports;
-/******/
+/******/ 		}
 /******/ 		// Create a new module (and put it into the cache)
 /******/ 		var module = installedModules[moduleId] = {
 /******/ 			i: moduleId,
@@ -64,7 +64,7 @@ module.exports =
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 21);
+/******/ 	return __webpack_require__(__webpack_require__.s = 22);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -83,13 +83,13 @@ var config = {
     },
     dev: {
         LOG_LEVEL: 'debug',
-        proxy_url: 'http://10.16.54.74:8098',
-        backend_url: 'http://10.16.54.74:8098'
+        proxy_url: 'http://10.11.173.240:8097',
+        backend_url: 'http://10.11.173.240:8097'
     },
     test: {
         LOG_LEVEL: 'info',
-        proxy_url: 'http://10.11.173.240:8097',
-        backend_url: 'http://10.11.173.240:8097'
+        proxy_url: 'http://10.11.174.40:8098/',
+        backend_url: 'http://10.11.174.40:8098/'
     },
     production: {
         LOG_LEVEL: 'info'
@@ -102,12 +102,44 @@ exports.default = Object.assign({}, config['base'], config[env]);
 
 /***/ }),
 /* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _winston = __webpack_require__(21);
+
+var winston = _interopRequireWildcard(_winston);
+
+var _config = __webpack_require__(0);
+
+var _config2 = _interopRequireDefault(_config);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+var logger = new winston.Logger({
+    exitOnError: false,
+    transports: [new winston.transports.Console()]
+});
+
+logger.level = _config2.default.LOG_LEVEL;
+
+exports.default = logger;
+
+/***/ }),
+/* 2 */
 /***/ (function(module, exports) {
 
 module.exports = require("koa-router");
 
 /***/ }),
-/* 2 */
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -143,19 +175,19 @@ var ErrorOverRide = function (_Error) {
 exports.default = ErrorOverRide;
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, exports) {
 
 module.exports = require("request");
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _koa = __webpack_require__(14);
+var _koa = __webpack_require__(15);
 
 var _koa2 = _interopRequireDefault(_koa);
 
@@ -163,11 +195,11 @@ var _timeout = __webpack_require__(9);
 
 var _timeout2 = _interopRequireDefault(_timeout);
 
-var _koaViews = __webpack_require__(17);
+var _koaViews = __webpack_require__(18);
 
 var _koaViews2 = _interopRequireDefault(_koaViews);
 
-var _path = __webpack_require__(19);
+var _path = __webpack_require__(20);
 
 var _path2 = _interopRequireDefault(_path);
 
@@ -175,13 +207,13 @@ var _routes = __webpack_require__(11);
 
 var _routes2 = _interopRequireDefault(_routes);
 
-var _koaSend = __webpack_require__(16);
+var _koaSend = __webpack_require__(17);
 
 var _koaSend2 = _interopRequireDefault(_koaSend);
 
-var _koaBodyparser = __webpack_require__(15);
+var _koaBetterBody = __webpack_require__(16);
 
-var _koaBodyparser2 = _interopRequireDefault(_koaBodyparser);
+var _koaBetterBody2 = _interopRequireDefault(_koaBetterBody);
 
 var _proxy = __webpack_require__(8);
 
@@ -190,6 +222,10 @@ var _proxy2 = _interopRequireDefault(_proxy);
 var _config = __webpack_require__(0);
 
 var _config2 = _interopRequireDefault(_config);
+
+var _logger = __webpack_require__(1);
+
+var _logger2 = _interopRequireDefault(_logger);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -213,17 +249,18 @@ app.use(regeneratorRuntime.mark(function _callee(next) {
                     return next;
 
                 case 3:
-                    _context.next = 9;
+                    _context.next = 10;
                     break;
 
                 case 5:
                     _context.prev = 5;
                     _context.t0 = _context['catch'](0);
 
+                    _logger2.default.error(_context.t0);
                     this.status = _context.t0.status || 500;
                     this.body = _context.t0.message;
 
-                case 9:
+                case 10:
                 case 'end':
                     return _context.stop();
             }
@@ -251,9 +288,7 @@ app.use(regeneratorRuntime.mark(function _callee2(next) {
     }, _callee2, this);
 }));
 
-app.use((0, _koaBodyparser2.default)({
-    formLimit: '1mb' //prevent payload too large 413
-}));
+app.use((0, _koaBetterBody2.default)({}));
 
 app.use(_routes2.default.routes());
 
@@ -288,46 +323,17 @@ app.use(regeneratorRuntime.mark(function _callee3(next) {
 
 app.use(_proxy2.default);
 
-var argv = __webpack_require__(18).argv;
+var argv = __webpack_require__(19).argv;
 
 var port = argv.port;
 
 app.listen(port || 8888);
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports) {
 
 module.exports = require("babel-polyfill");
-
-/***/ }),
-/* 6 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _winston = __webpack_require__(20);
-
-var winston = _interopRequireWildcard(_winston);
-
-var _config = __webpack_require__(0);
-
-var _config2 = _interopRequireDefault(_config);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-var logger = new winston.Logger({ exitOnError: false });
-
-logger.level = _config2.default.LOG_LEVEL;
-
-exports.default = logger;
 
 /***/ }),
 /* 7 */
@@ -340,7 +346,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _request = __webpack_require__(3);
+var _request = __webpack_require__(4);
 
 var _request2 = _interopRequireDefault(_request);
 
@@ -431,7 +437,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 exports.default = _callee;
 
-var _request = __webpack_require__(3);
+var _request = __webpack_require__(4);
 
 var _request2 = _interopRequireDefault(_request);
 
@@ -439,9 +445,17 @@ var _config = __webpack_require__(0);
 
 var _config2 = _interopRequireDefault(_config);
 
-var _error = __webpack_require__(2);
+var _error = __webpack_require__(3);
 
 var _error2 = _interopRequireDefault(_error);
+
+var _logger = __webpack_require__(1);
+
+var _logger2 = _interopRequireDefault(_logger);
+
+var _fs = __webpack_require__(14);
+
+var _fs2 = _interopRequireDefault(_fs);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -454,7 +468,7 @@ var hyperRequest = _request2.default.defaults({
 var create_opt = function create_opt(ctx) {
     var default_opt = {
         headers: {
-            'Content-Type': ctx.headers['content-type'],
+            'content-type': ctx.headers['content-type'],
             Host: _config2.default.proxy_url.replace(/https?:\/\//g, ''),
             Referer: _config2.default.proxy_url,
             cookie: ctx.headers['cookie']
@@ -467,21 +481,30 @@ var create_opt = function create_opt(ctx) {
 };
 
 var parse_body = function parse_body(ctx) {
-    var body = ctx.request.body;
-    if (body === undefined || body === null) {
-        return { body: undefined };
-    }
     var content_type = ctx.request.header['content-type'];
-
-    if (!Buffer.isBuffer(body) && typeof body !== 'string') {
+    if (content_type && content_type.match(/multipart\/form-data/)) {
+        var formData = {};
+        try {
+            for (var key in ctx.request.fields) {
+                formData[key] = _fs2.default.createReadStream(ctx.request.files[0].path);
+            }
+        } catch (e) {
+            _logger2.default.error(e);
+        }
+        return { formData: formData };
+    }
+    if (ctx.request.body) {
+        //is buffer or string
+        return { body: ctx.request.body };
+    }
+    if (ctx.request.fields) {
         if (content_type && content_type.indexOf('form') !== -1) {
-            return { form: body };
+            return { form: ctx.request.fields };
         } else {
-            body = JSON.stringify(body);
-            return { body: body };
+            return { body: JSON.stringify(ctx.request.fields) };
         }
     }
-    return { body: body };
+    return { body: undefined };
 };
 
 var request_promise = exports.request_promise = function request_promise(opt) {
@@ -536,11 +559,11 @@ var _co = __webpack_require__(13);
 
 var _co2 = _interopRequireDefault(_co);
 
-var _logger = __webpack_require__(6);
+var _logger = __webpack_require__(1);
 
 var _logger2 = _interopRequireDefault(_logger);
 
-var _error = __webpack_require__(2);
+var _error = __webpack_require__(3);
 
 var _error2 = _interopRequireDefault(_error);
 
@@ -603,7 +626,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _koaRouter = __webpack_require__(1);
+var _koaRouter = __webpack_require__(2);
 
 var _koaRouter2 = _interopRequireDefault(_koaRouter);
 
@@ -665,7 +688,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _koaRouter = __webpack_require__(1);
+var _koaRouter = __webpack_require__(2);
 
 var _koaRouter2 = _interopRequireDefault(_koaRouter);
 
@@ -717,7 +740,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _koaRouter = __webpack_require__(1);
+var _koaRouter = __webpack_require__(2);
 
 var _koaRouter2 = _interopRequireDefault(_koaRouter);
 
@@ -761,50 +784,56 @@ module.exports = require("co");
 /* 14 */
 /***/ (function(module, exports) {
 
-module.exports = require("koa");
+module.exports = require("fs");
 
 /***/ }),
 /* 15 */
 /***/ (function(module, exports) {
 
-module.exports = require("koa-bodyparser");
+module.exports = require("koa");
 
 /***/ }),
 /* 16 */
 /***/ (function(module, exports) {
 
-module.exports = require("koa-send");
+module.exports = require("koa-better-body");
 
 /***/ }),
 /* 17 */
 /***/ (function(module, exports) {
 
-module.exports = require("koa-views");
+module.exports = require("koa-send");
 
 /***/ }),
 /* 18 */
 /***/ (function(module, exports) {
 
-module.exports = require("optimist");
+module.exports = require("koa-views");
 
 /***/ }),
 /* 19 */
 /***/ (function(module, exports) {
 
-module.exports = require("path");
+module.exports = require("optimist");
 
 /***/ }),
 /* 20 */
 /***/ (function(module, exports) {
 
-module.exports = require("winston");
+module.exports = require("path");
 
 /***/ }),
 /* 21 */
+/***/ (function(module, exports) {
+
+module.exports = require("winston");
+
+/***/ }),
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(5);
-module.exports = __webpack_require__(4);
+__webpack_require__(6);
+module.exports = __webpack_require__(5);
 
 
 /***/ })

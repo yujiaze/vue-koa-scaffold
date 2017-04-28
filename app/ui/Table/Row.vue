@@ -29,7 +29,7 @@
                         </div>
                     </td>
                 } else {
-                    child = <td key={ column[i].id }>
+                    child = <td class='ui-td' key={ column[i].id }>
                         <div>
                             { column[i].slot(createProps(item, column[i].prop)) }
                         </div>

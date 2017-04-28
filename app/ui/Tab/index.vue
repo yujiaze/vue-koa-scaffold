@@ -51,6 +51,7 @@
         border-bottom: 1px solid #d1dbe5;
         height: 42px;
         line-height: 42px;
+        margin-bottom: 15px;
         >li {
             display: inline-block;
             height: 42px;
