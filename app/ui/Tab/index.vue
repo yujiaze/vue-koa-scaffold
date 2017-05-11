@@ -23,21 +23,17 @@
         data() {
             return {
                 tabList: [],
-                cur: ''
+                valueList: [],
+                cur: 0
             }
-        },
-        mounted() {
-            this.cur = 0
         },
         methods: {
             setActive(idx) {
                 this.cur = idx
             }
         },
-        watch: {
-            cur: function() {
-                this.$emit('ui-tab-switch', this.cur)
-            }
+        beforeUpdate() {
+            this.$emit('ui-tab-switch', this.valueList[this.cur] || this.cur)
         }
     }
     

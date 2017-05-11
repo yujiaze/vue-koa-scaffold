@@ -10,7 +10,7 @@
 </template>
 
 <script>
-
+	
 	const Notification = {
 		name: 'Notification',
 		props: {
@@ -76,7 +76,7 @@
 		window.$notify = Vue.prototype.$notify = (options) => {
 			var _dom = document.createElement('div')
 			let _Constructor = Vue.extend(Notification)
-			document.body.append(_dom)
+			document.body.appendChild(_dom)
 			return new _Constructor({
 				el: _dom,
 				propsData: {

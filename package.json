@@ -4,10 +4,10 @@
   "description": "vue koa webpack ESNext ",
   "main": "index.js",
   "scripts": {
-    "start:dev": "nodemon ./bin/www 8888",
+    "start:dev": "nodemon ./bin/www --port=8889",
     "build:dev": "webpack --config ./webpack/dev.js --watch",
     "build:dll": "webpack --config ./webpack/dll.js",
-    "start:test": "gulp start:test",
+    "start": "gulp start",
     "init": "gulp build"
   },
   "keywords": [
@@ -31,6 +31,7 @@
     "koa-views": "^4.0.1",
     "optimist": "^0.6.1",
     "pug": "2.0.0-beta3",
+    "qs": "^6.4.0",
     "request": "^2.81.0",
     "vue": "^2.2.6",
     "vue-router": "^2.3.0",

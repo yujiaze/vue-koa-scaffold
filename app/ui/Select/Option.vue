@@ -1,5 +1,5 @@
 <template>
-    <li :class="[isCur() ? 'cur' : '']" @click="change">
+    <li v-if="shouldShow" :class="[isCur() ? 'cur' : '']" @click="change">
         {{label}}
     </li>
 </template>
@@ -16,6 +16,7 @@
         }
     })
     export default class Option extends Vue {
+        shouldShow = true
         constructor() {
             super()
         }
@@ -33,6 +34,10 @@
                     value: this.value
                 })
             }
+            this.$parent.options.push({
+                label: this.label,
+                value: this.value
+            })
         }
         setCur(op) {
             if (this.$parent.multiple) {

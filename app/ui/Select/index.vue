@@ -3,18 +3,15 @@
         <div :class="[multiple ? 'ui-select-cur-multi' : 'ui-select-cur']" @click="toggleShow">
             <input ref="search" readonly class="ui-select-cur-none" v-if="cur.length == 0" placeholder="请选择" />
             <span :class="[multiple ? 'ui-tag': 'ui-select-cur-item' ]" v-else v-for="item in cur">
-                                {{item.label}}
-                                <i class="kz-e-close" v-if="multiple" v-on:click.stop="handleRemoveCur(item)"></i>
-                            </span>
+                {{item.label}}
+                <i class="kz-e-close" v-if="multiple" v-on:click.stop="handleRemoveCur(item)"></i>
+            </span>
             <i class="kz-e-angle-down"></i>
         </div>
         <ul v-show="show">
             <slot>
                 <ui-option v-for="item in options" key="item.value" label="item.label" value="item.value"></ui-option>
             </slot>
-        </ul>
-        <ul class="ui-select-search" v-if="showSearch">
-            <ui-option v-for="item in searchResult" key="item.value" label="item.label" value="item.value"></ui-option>
         </ul>
     </div>
 </template>
@@ -42,22 +39,25 @@
     export default class Select extends Vue {
         cur = []
         options = []
-        searchResult = []
+        keywords = ''
         show = false
-        showSearch = false
         constructor() {
             super()
         }
         created() {
             this.remote && this.remote(data => this.options = data)
             document.addEventListener('click', () => {
-                this.show = this.showSearch = false
+                this.show = false
             })
+        }
+        mounted() {
+            var that = this
             if (this.searchable) {
                 this.$refs['search'].removeAttribute('readonly')
                 this.$refs['search'].oninput = e => {
-                    this.showSearch = true
-                    this.searchable(data => this.searchResult = data)
+                    that.keywords = e.target.value
+                    that.$children.forEach(child => {
+                        child.shouldShow = child.label.includes(e.target.value)})
                 }
             }
         }

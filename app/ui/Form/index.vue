@@ -7,13 +7,17 @@
         name: 'Form',
         data() {
             return {
-                formData: {}
+                formData: {},
+                throttingId: null
             }
         },
         watch: {
             formData: {
                 handler(val) {
-                    this.onChange(this.formData)
+                    if(this.throttingId) window.clearTimeout(this.throttingId)
+                    this.throttingId = setTimeout(() => {
+                        this.onChange(this.formData)
+                    }, 300)
                 },
                 deep: true
             }
@@ -41,7 +45,7 @@
                 if (!false) {
                     return
                 }
-        
+
             },
         },
         created() {
@@ -69,7 +73,7 @@
                 Comp == 'ui-input' ? inputChildren.push(comp) : children.push(comp)
             })
             return ( 
-                <form class="ui-form"> 
+                <form accept-charset="utf-8" charset="utf-8" accept="utf-8" class="ui-form"> 
                     {children} 
                     <div class="ui-form-input"> 
                         {inputChildren} 
@@ -85,5 +89,5 @@
 
 
 <style>
-    
+
 </style>

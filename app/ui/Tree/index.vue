@@ -20,28 +20,28 @@
 </template>
 
 <script>
-    export default {
-        name: "Tree",
-        props: {
-            items: Object
-        },
-        data() {
-            return {
-                open: false,
-                noop: () => {}
-            }
-        },
-        computed: {
-            isFolder() {
-                return this.items.children && this.items.children.length != 0 ? true : false
-            }
-        },
-        methods: {
-            toggle() {
-                this.open = !this.open
-            }
+export default {
+    name: "Tree",
+    props: {
+        items: Object
+    },
+    data() {
+        return {
+            open: false,
+            noop: () => {}
+        }
+    },
+    computed: {
+        isFolder() {
+            return this.items.children && this.items.children.length != 0 ? true : false
+        }
+    },
+    methods: {
+        toggle() {
+            this.open = !this.open
         }
     }
+}
 </script>
 
 <style scoped lang="postcss">

@@ -2,6 +2,7 @@ const webpack = require('webpack');
 const path = require('path');
 const ROOT_PATH = path.join(__dirname, '..');
 const BUILD_PATH = path.join(__dirname, '..', '/build');
+var NODE_ENV = process.env.NODE_ENV ? process.env.NODE_ENV : 'dev';
 
 require('shelljs/global');
 
@@ -81,7 +82,7 @@ module.exports = function (PUBLIC_PATH) {
                     TYPES: ROOT_PATH + '/app/constant.js'
                 }),
                 new webpack.DefinePlugin({
-                    'process.env.NODE_ENV': JSON.stringify('dev')
+                    'process.env.NODE_ENV': JSON.stringify(NODE_ENV)
                 }),
                 new webpack.LoaderOptionsPlugin({
                     options: {
