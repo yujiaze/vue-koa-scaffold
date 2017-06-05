@@ -1,0 +1,28 @@
+parserOptions:
+  ecmaVersion: 2017
+  sourceType: module
+  ecmaFeatures: 
+    jsx: true
+    impliedStrict: true
+    globalReturn: false
+    experimentalObjectRestSpread: true
+extends:
+  - eslint:recommended
+rules:
+  # DO NOT use semicolon
+  semi:
+    - error
+    - never
+  no-unused-vars:
+    - warn
+    - vars: local
+      args: none
+globals:
+  TYPES: false
+  CONFIG: false
+  Promise: false
+  $notify: false
+env:
+  browser: true
+  node: true
+  jquery: true

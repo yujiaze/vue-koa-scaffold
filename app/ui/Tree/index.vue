@@ -28,7 +28,7 @@ export default {
     data() {
         return {
             open: false,
-            noop: () => {}
+            noop: () => { }
         }
     },
     computed: {
@@ -97,5 +97,8 @@ export default {
     }
     li>* {
         padding-left: 20px;
+    }
+    .router-link-active{
+        color: #f40;
     }
 </style>

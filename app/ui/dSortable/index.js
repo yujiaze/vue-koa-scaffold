@@ -72,9 +72,11 @@ function onDragOver(e, group, sort, put, pull) {
     if (shouldReturn(e, group, sort, put, pull)) return
     e.preventDefault() //调用了这个方法才会有接下来的事件
     var box = e.currentTarget.getBoundingClientRect(),
+        /* eslint-disable no-unused-vars */
         offsetX = e.clientX - box.left,
+        /* eslint-enable no-unused-vars */
         offsetY = e.clientY - box.top,
-        height = e.currentTarget.offsetHeight;
+        height = e.currentTarget.offsetHeight
     var _insertPos = 'beforebegin'
     if (offsetY < height / 2) {
         _insertPos = 'afterend'

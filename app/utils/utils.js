@@ -8,5 +8,8 @@ export default {
             to: to,
             exchanged: exchanged
         }
+    },
+    formatTime(time) {
+        return (new Date(time)).toString().replace(/GMT.*/g, '')
     }
 }

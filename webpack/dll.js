@@ -1,5 +1,24 @@
 var path = require('path');
 var webpack = require('webpack');
+var isDev = process.env.NODE_ENV == 'dev' || !process.env.NODE_ENV
+
+var plugins = [
+    new webpack.DllPlugin({
+        context: __dirname,
+        path: path.resolve(__dirname, '../build/dll/[name].manifest.json'),
+        name: "[name]"
+    })
+]
+
+!isDev && plugins.push(
+    new webpack.optimize.UglifyJsPlugin(
+        {
+            compress: {
+                warnings: false
+            }
+        }
+    )
+)
 
 module.exports = {
     entry: {
@@ -34,17 +53,5 @@ module.exports = {
             // }
         ]
     },
-
-    plugins: [
-        new webpack.DllPlugin({
-            path: path.resolve(__dirname, '../build/dll/[name].manifest.json'),
-            name: "[name]"
-        }),
-        // new webpack.optimize.UglifyJsPlugin(
-        //     {
-        //         minimize: true,
-        //         output: {comments: false}
-        //     }
-        // ),
-    ]
+    plugins: plugins
 };

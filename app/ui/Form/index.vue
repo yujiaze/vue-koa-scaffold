@@ -14,10 +14,7 @@
         watch: {
             formData: {
                 handler(val) {
-                    if(this.throttingId) window.clearTimeout(this.throttingId)
-                    this.throttingId = setTimeout(() => {
-                        this.onChange(this.formData)
-                    }, 300)
+                    this.onChange(this.formData)
                 },
                 deep: true
             }
@@ -38,14 +35,15 @@
         },
         methods: {
             handleChange(value, key) {
-                Vue.set(this.formData, key, value)
-                if (key == 'link') this.handleParseUrl(value)
-            },
-            handleParseUrl(url) {
-                if (!false) {
+                if (key == 'link') {
+                    this.handleParseUrl(value)
                     return
                 }
-
+                Vue.set(this.formData, key, value)
+            },
+            handleParseUrl(url) {
+                if (!url) return
+                 
             },
         },
         created() {
@@ -72,7 +70,7 @@
                 })
                 Comp == 'ui-input' ? inputChildren.push(comp) : children.push(comp)
             })
-            return ( 
+            return (
                 <form accept-charset="utf-8" charset="utf-8" accept="utf-8" class="ui-form"> 
                     {children} 
                     <div class="ui-form-input"> 

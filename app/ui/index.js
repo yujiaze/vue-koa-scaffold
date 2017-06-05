@@ -24,6 +24,7 @@ export {
     Tab,
     Modal,
     Checkbox,
+    ImageCutter,
     ImageUploader,
     ImageUploader2,
     Select,

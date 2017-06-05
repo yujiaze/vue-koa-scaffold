@@ -10,7 +10,7 @@
                 <slot>
                 </slot>
             </div>
-            <row v-for="item in data" :column="columnList" :item="item" :key="item.id"></row>
+            <row v-for="(item, idx) in data" :index="idx" :column="columnList" :item="item" :key="item.id"></row>
         </tbody>
     </table>
 </template>
