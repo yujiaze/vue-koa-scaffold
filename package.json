@@ -8,7 +8,7 @@
     "build:dev": "webpack --config ./webpack/dev.js --watch",
     "build:dll": "webpack --config ./webpack/dll.js",
     "pre-commit:tips": "echo \"We use eslint for pre commit hook, \nif you're fixing some bugs in a hurry, use --no-verify to ignore this hook, otherwise you should fix these eslint errors\"",
-    "eslint": "eslint --config .eslintrc.yaml --color app/",
+    "eslint": "eslint --config .eslintrc.yaml --color 'app/**/*.{js,vue}'",
     "start": "gulp start",
     "init": "gulp build"
   },
@@ -47,6 +47,7 @@
   "devDependencies": {
     "autoprefixer": "^6.7.7",
     "babel": "^6.23.0",
+    "babel-eslint": "^7.2.3",
     "babel-core": "^6.24.0",
     "babel-helper-vue-jsx-merge-props": "^2.0.2",
     "babel-loader": "^6.4.1",
@@ -60,6 +61,8 @@
     "clean-webpack-plugin": "^0.1.16",
     "css-loader": "^0.27.3",
     "eslint": "^3.19.0",
+    "eslint-plugin-html": "^2.0.3",
+    "eslint-plugin-vue": "^2.0.1",
     "extract-text-webpack-plugin": "^2.1.0",
     "file-loader": "^0.10.1",
     "gulp": "^3.9.1",
