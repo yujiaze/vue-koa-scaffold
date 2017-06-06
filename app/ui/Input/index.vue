@@ -9,7 +9,6 @@
 </template>
 
 <script>
-import Vue from 'vue'
 import uid from '../../utils/uuid.js'
 
 let uidPrefix = 'ui-input'
@@ -36,8 +35,8 @@ const Input = {
     data() {
         return {
             uid: uid(uidPrefix),
-            value: this.initial || ''
-        }
+            value: typeof this.initial === 'undefined' ? '' : this.initial
+         }
     },
     watch: {
         initial() {

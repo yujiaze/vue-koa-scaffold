@@ -1,42 +1,42 @@
 <template>
     <div class="ui-checkbox">
         <div class="ui-checkbox-item">
-            <input :id="id" type="checkbox" ref="checkbox" v-model="checked" />
-            <label :for="id" @click="toggle">
+            <input type="checkbox" ref="checkbox" :checked="checked" />
+            <label @click="toggle">
                 {{title}}
             </label>
         </div>
     </div>
 </template>
 
-
 <script>
     import Vue from 'vue'
     import Component from 'vue-class-component'
-    
     
     let _uid = 0
     
     const _uuid = () => "ui-checkbox-" + (_uid++)
     
-    @Component({
+    export default {
+        name: 'Checkbox',
         props: {
             title: String,
             initial: Boolean
-        }
-    })
-    export default class Checkbox extends Vue {
-        name = 'Checkbox'
-        id = _uuid()
-        checked = this.initial || false
-        constructor() {
-            super()
-        }
+        },
+        data() {
+            return {
+                id: _uuid(),
+                checked: this.initial || false
+            }
+        },
         beforeUpdate() {
             this.checked = this.initial
-        }
-        toggle(e) {
-            this.$emit("ui-checkbox-toggle", !this.$refs['checkbox'].checked) //when label click trigger , the checkbox doesn't trigger click yet
+        },
+        methods: {
+            toggle(e) {
+                this.checked = !this.$refs['checkbox'].checked
+                this.$emit("ui-checkbox-toggle", !this.$refs['checkbox'].checked) //when label click trigger , the checkbox doesn't trigger click yet
+            }
         }
     }
 </script>

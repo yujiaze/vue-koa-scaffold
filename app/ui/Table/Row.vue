@@ -1,4 +1,6 @@
 <script lang="babel">
+    import Checkbox from '../Checkbox'
+
     function createProps(item, prop, index) {
         if (!prop) return { _self: item, index: index }
         if (typeof prop == 'string') {
@@ -10,7 +12,7 @@
         } else {
             return prop.reduce((prev, cur) => {
                 prev[cur] = item[cur]
-                return prev;
+                return prev
             }, { _self: item, index:index, [prop[0]]: item[prop[0]] })
         }
     }
@@ -20,7 +22,9 @@
         props: {
             column: Array,
             item: [Object, Array],
-            index: Number
+            index: Number,
+            checking: Array,
+            emitCheckingChange: Function
         },
         render(h) {
             let { item, column, index } = this
@@ -38,12 +42,23 @@
                         </div>
                     </td>
                 }
-                if (column[i].type == 'index') {
-                    child = <td key={ column[i].id }>
-                        <div>
-                            { index + 1 }
-                        </div>
-                    </td>
+                switch (column[i].type) {
+                    case 'index':
+                        child = <td key={ column[i].id }>
+                            <div>
+                                { index + 1 }
+                            </div>
+                        </td>
+                        break
+                    case 'select':
+                        child =  <td key={ column[i].id }>
+                            <div>
+                                <Checkbox on-ui-checkbox-toggle={(val) => this.handleCheck(val, item)} initial={this.checking.indexOf(item) !== -1}/>
+                            </div>
+                        </td>
+                        break
+                    default:
+                        break
                 }
                 children.push(child)
             }
@@ -52,6 +67,13 @@
                     { children }
                 </tr>
             )
+        },
+        methods:{
+            handleCheck(bool, item){
+                const idx = this.checking.indexOf(item)
+                idx == -1 ? this.$parent.checking.push(item): this.$parent.checking.splice(idx, 1)
+                this.emitCheckingChange()
+            }
         }
     }
 </script>
